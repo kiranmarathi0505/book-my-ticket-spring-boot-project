@@ -1,5 +1,8 @@
 package kiran.ticket_booking.service;
 
+import java.security.SecureRandom;
+import java.util.Random;
+
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -9,6 +12,7 @@ import kiran.ticket_booking.dto.Userdto;
 import kiran.ticket_booking.entity.User;
 import kiran.ticket_booking.repository.UserRepository;
 import kiran.ticket_booking.util.AES;
+import kiran.ticket_booking.util.EmailHelper;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -16,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImp implements UserService {
 	
 	private final UserRepository userRepository;
+	private final EmailHelper emailHelper;
+	private final SecureRandom random;
 
 	@Override
 	public String register(Userdto userdto, BindingResult result) {
@@ -33,6 +39,8 @@ public class UserServiceImp implements UserService {
 			return "register.html";
 		}
 		else {
+			int otp = random.nextInt(100000,1000000);
+			emailHelper.mailSend(otp, userdto.getName(), userdto.getEmail() );
 			return "redirect:/";
 		}
 	}
