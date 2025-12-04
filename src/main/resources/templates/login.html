@@ -5,129 +5,192 @@
 <title>Book My Ticket - Login</title>
 
 <!-- Bootstrap CSS -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 body {
-	background: #f4f6f9;
+	font-family: "Poppins", sans-serif;
+	background: url('https://images.unsplash.com/photo-1524985069026-dd778a71c7b4?auto=format&fit=crop&w=1500&q=80')
+				center/cover no-repeat fixed;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
 }
 
-.navbar-brand {
-	font-weight: bold;
-	font-size: 1.5rem;
+body::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	background: rgba(0, 0, 0, 0.65);
+	z-index: -1;
 }
 
+/* Glass Login Box */
 .login-box {
+	width: 100%;
 	max-width: 420px;
-	margin-top: 80px;
-	background: #fff;
 	padding: 35px;
-	border-radius: 12px;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+	margin-top: 90px;
+	background: rgba(255, 255, 255, 0.12);
+	border-radius: 18px;
+	backdrop-filter: blur(14px);
+	border: 1px solid rgba(255, 255, 255, 0.25);
+	box-shadow: 0 10px 35px rgba(0,0,0,0.45);
+	color: #fff;
+	animation: fadeIn .7s ease-out;
+}
+
+@keyframes fadeIn {
+	from {opacity: 0; transform: translateY(20px);}
+	to   {opacity: 1; transform: translateY(0);}
+}
+
+/* Inputs */
+.form-control {
+	background: rgba(255, 255, 255, 0.18);
+	border: 1px solid rgba(255, 255, 255, 0.35);
+	color: #fff;
+}
+
+.form-control::placeholder {
+	color: rgba(255,255,255,0.7);
+}
+
+.form-control:focus {
+	background: rgba(255,255,255,0.3);
+	border-color: #ff884d;
+	box-shadow: 0 0 0 0.16rem rgba(255,136,77,0.45);
+	color: #fff;
+}
+
+/* Gradient Button */
+.btn-gradient {
+	background: linear-gradient(45deg, #ff4d4d, #ff884d);
+	border: none;
+	padding: 10px;
+	color: white;
+	font-weight: 500;
+	width: 100%;
+	border-radius: 10px;
+	box-shadow: 0 4px 15px rgba(255, 87, 34, 0.4);
+	transition: .3s;
+}
+
+.btn-gradient:hover {
+	background: linear-gradient(45deg, #ff3333, #ff6600);
+	transform: translateY(-2px);
+	box-shadow: 0 7px 20px rgba(255, 87, 34, 0.55);
+}
+
+/* Navbar */
+.navbar-brand {
+	font-weight: 650;
+	font-size: 1.5rem;
+	letter-spacing: .5px;
 }
 </style>
+
 </head>
 
 <body>
 
-	<!-- NAVBAR -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm">
-		<a class="navbar-brand" href="/">🎬 BookMyTicket</a>
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm">
+	<a class="navbar-brand" href="/">🎬 BookMyTicket</a>
 
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-			data-bs-target="#navMenu">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+	<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+		<span class="navbar-toggler-icon"></span>
+	</button>
 
-		<div id="navMenu" class="collapse navbar-collapse justify-content-end">
+	<div id="navMenu" class="collapse navbar-collapse justify-content-end">
 
-			<!-- NOT LOGGED IN -->
-			<div th:if="${session.user == null}">
-				<a href="/login" class="btn btn-outline-light me-2">Login</a> <a
-					href="/register" class="btn btn-warning">Register</a>
-			</div>
-
-			<!-- LOGGED IN -->
-			<div th:if="${session.user != null}"
-				class="d-flex align-items-center">
-				<span class="text-white me-3"
-					th:text="'Hello, ' + ${session.user.name}"></span> <a
-					href="/logout" class="btn btn-danger">Logout</a>
-			</div>
-
+		<!-- Not Logged In -->
+		<div th:if="${session.user == null}">
+			<a href="/login" class="btn btn-outline-light me-2">Login</a>
+			<a href="/register" class="btn btn-warning">Register</a>
 		</div>
-	</nav>
 
-
-	<!-- TOASTS -->
-	<div aria-live="polite" aria-atomic="true" class="position-relative">
-		<div class="toast-container position-fixed top-0 end-0 p-3">
-
-			<!-- SUCCESS TOAST -->
-			<div th:if="${pass}" class="toast bg-success text-white border-0">
-				<div class="toast-header bg-success text-white">
-					<strong class="me-auto">Success</strong>
-					<button class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-				</div>
-				<div class="toast-body" th:text="${pass}"></div>
-			</div>
-
-			<!-- ERROR TOAST -->
-			<div th:if="${fail}" class="toast bg-danger text-white border-0">
-				<div class="toast-header bg-danger text-white">
-					<strong class="me-auto">Error</strong>
-					<button class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-				</div>
-				<div class="toast-body" th:text="${fail}"></div>
-			</div>
-
+		<!-- Logged In -->
+		<div th:if="${session.user != null}" class="d-flex align-items-center">
+			<span class="text-white me-3" th:text="'Hello, ' + ${session.user.name}"></span>
+			<a href="/logout" class="btn btn-danger">Logout</a>
 		</div>
+
 	</div>
+</nav>
 
+<!-- TOASTS -->
+<div aria-live="polite" aria-atomic="true" class="position-relative">
+	<div class="toast-container position-fixed top-0 end-0 p-3">
 
-	<!-- LOGIN BOX -->
-	<div class="container d-flex justify-content-center">
-		<div class="login-box">
-
-			<h3 class="text-center mb-4 fw-bold">Login</h3>
-
-			<form action="/login" method="post">
-
-				<div class="mb-3 text-start">
-					<label class="form-label">Email</label> <input type="email"
-						name="email" class="form-control" required>
-				</div>
-
-				<div class="mb-3 text-start">
-					<label class="form-label">Password</label> <input type="password"
-						name="password" class="form-control" required>
-				</div>
-
-				<button class="btn btn-primary w-100 mt-2">Login</button>
-
-				<div class="text-center mt-3">
-					<small> Don't have an account? <a href="/register"
-						class="text-primary">Register</a>
-					</small>
-				</div>
-
-			</form>
-
+		<!-- SUCCESS -->
+		<div th:if="${pass}" class="toast bg-success text-white border-0">
+			<div class="toast-header bg-success text-white">
+				<strong class="me-auto">Success</strong>
+				<button class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+			</div>
+			<div class="toast-body" th:text="${pass}"></div>
 		</div>
+
+		<!-- ERROR -->
+		<div th:if="${fail}" class="toast bg-danger text-white border-0">
+			<div class="toast-header bg-danger text-white">
+				<strong class="me-auto">Error</strong>
+				<button class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
+			</div>
+			<div class="toast-body" th:text="${fail}"></div>
+		</div>
+
 	</div>
+</div>
 
 
-	<!-- Bootstrap JS -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- LOGIN BOX -->
+<div class="container d-flex justify-content-center">
+	<div class="login-box">
 
-	<!-- Auto-show toast -->
-	<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll('.toast').forEach(t => new bootstrap.Toast(t).show());
-    });
+		<h3 class="text-center mb-4 fw-bold">Login</h3>
+
+		<form action="/login" method="post">
+
+			<div class="mb-3 text-start">
+				<label class="form-label">Email</label>
+				<input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+			</div>
+
+			<div class="mb-3 text-start">
+				<label class="form-label">Password</label>
+				<input type="password" name="password" class="form-control" placeholder="Enter password" required>
+			</div>
+
+			<button class="btn-gradient mt-2">Login</button>
+
+			<a href="/forgot-password" class="d-block mt-3 text-light text-center" style="opacity: .85;">
+				Forgot Password?
+			</a>
+
+			<div class="text-center mt-3">
+				<small class="text-light">Don't have an account? 
+					<a href="/register" class="text-warning fw-semibold">Register</a>
+				</small>
+			</div>
+
+		</form>
+
+	</div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Auto-show toast -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+	document.querySelectorAll('.toast').forEach(t => new bootstrap.Toast(t).show());
+});
 </script>
 
 </body>

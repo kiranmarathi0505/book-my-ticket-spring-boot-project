@@ -4,165 +4,198 @@
 <meta charset="UTF-8">
 <title>Book My Ticket - Register</title>
 
-<!-- Bootstrap CSS -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<!-- Bootstrap -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 
 <style>
 body {
-	background: #f4f6f9;
+    font-family: "Poppins", sans-serif;
+    background: #eef1f7;
+    height: 100vh;
 }
 
-.navbar-brand {
-	font-weight: bold;
-	font-size: 1.5rem;
+/* Split Screen */
+.main-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Left Section - Illustration */
+.left-panel {
+    flex: 1;
+    background: url('https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?auto=format&fit=crop&w=1500&q=80')
+                center/cover no-repeat;
+    position: relative;
+}
+
+.left-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+}
+
+.left-content {
+    position: absolute;
+    bottom: 50px;
+    left: 40px;
+    color: #fff;
+    max-width: 400px;
+}
+
+.left-content h1 {
+    font-weight: 600;
+    font-size: 2.3rem;
+}
+
+.left-content p {
+    opacity: 0.85;
+    font-size: 1.1rem;
+}
+
+/* Right Section - Form */
+.right-panel {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
 }
 
 .register-box {
-	max-width: 500px;
-	margin-top: 50px;
-	background: #fff;
-	padding: 35px;
-	border-radius: 12px;
-	box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    width: 100%;
+    max-width: 420px;
+    background: #fff;
+    border-radius: 18px;
+    padding: 35px;
+    box-shadow: 0px 10px 30px rgba(0,0,0,0.12);
+    animation: slideUp .7s ease-out;
+}
+
+/* Animation */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Inputs */
+.form-control {
+    background: #f5f7fb;
+    border: 1px solid #dce2ee;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.form-control:focus {
+    border-color: #4a90e2;
+    box-shadow: 0 0 0 .15rem rgba(74,144,226,0.25);
+}
+
+/* Button */
+.btn-primary {
+    background: #4a90e2;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 500;
+}
+
+.btn-primary:hover {
+    background: #3278cb;
 }
 
 .error-text {
-	font-size: 0.85rem;
-	color: red;
+    color: #e63946;
+    font-size: 0.85rem;
 }
 </style>
 </head>
 
 <body>
 
-	<!-- NAVBAR -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-4 shadow-sm">
-		<a class="navbar-brand" href="/">🎬 BookMyTicket</a>
+<div class="main-wrapper">
 
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-			data-bs-target="#navMenu">
-			<span class="navbar-toggler-icon"></span>
-		</button>
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+        <div class="left-content">
+            <h1>Join BookMyTicket</h1>
+            <p>Book your favorite movies, events, and shows with a seamless experience.  
+               Create your account to get started!</p>
+        </div>
+    </div>
 
-		<div id="navMenu" class="collapse navbar-collapse justify-content-end">
-			<div th:if="${session.user == null}">
-				<a href="/login" class="btn btn-outline-light me-2">Login</a> <a
-					href="/register" class="btn btn-warning">Register</a>
-			</div>
+    <!-- RIGHT PANEL -->
+    <div class="right-panel">
 
-			<div th:if="${session.user != null}"
-				class="d-flex align-items-center">
-				<span class="text-white me-3"
-					th:text="'Hello, ' + ${session.user.name}"></span> <a
-					href="/logout" class="btn btn-danger">Logout</a>
-			</div>
-		</div>
-	</nav>
+        <div class="register-box">
 
+            <h3 class="text-center mb-4 fw-bold">Create Your Account</h3>
 
-	<!-- TOASTS -->
-	<div aria-live="polite" aria-atomic="true" class="position-relative">
-		<div class="toast-container position-fixed top-0 end-0 p-3">
+            <form action="/register" method="post" th:object="${userdto}">
 
-			<!-- SUCCESS -->
-			<div th:if="${pass}" class="toast bg-success text-white border-0">
-				<div class="toast-header bg-success text-white">
-					<strong class="me-auto">Success</strong>
-					<button class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-				</div>
-				<div class="toast-body" th:text="${pass}"></div>
-			</div>
+                <!-- NAME -->
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" class="form-control" th:field="*{name}">
+                    <span class="error-text" th:errors="*{name}"></span>
+                </div>
 
-			<!-- ERROR -->
-			<div th:if="${fail}" class="toast bg-danger text-white border-0">
-				<div class="toast-header bg-danger text-white">
-					<strong class="me-auto">Error</strong>
-					<button class="btn-close btn-close-white" data-bs-dismiss="toast"></button>
-				</div>
-				<div class="toast-body" th:text="${fail}"></div>
-			</div>
+                <!-- EMAIL -->
+                <div class="mb-3">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-control" th:field="*{email}">
+                    <span class="error-text" th:errors="*{email}"></span>
+                </div>
 
-		</div>
-	</div>
+                <!-- MOBILE -->
+                <div class="mb-3">
+                    <label class="form-label">Mobile</label>
+                    <input type="number" class="form-control" th:field="*{mobile}">
+                    <span class="error-text" th:errors="*{mobile}"></span>
+                </div>
 
+                <!-- PASSWORD -->
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-control" th:field="*{password}">
+                    <span class="error-text" th:errors="*{password}"></span>
+                </div>
 
-	<!-- REGISTER FORM -->
-	<div class="container d-flex justify-content-center">
-		<div class="register-box">
+                <!-- CONFIRM PASSWORD -->
+                <div class="mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-control" th:field="*{confirmpassword}">
+                    <span class="error-text" th:errors="*{confirmpassword}"></span>
+                </div>
 
-			<h3 class="text-center mb-4 fw-bold">Create Account</h3>
+                <!-- TERMS -->
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" th:field="*{terms}">
+                    <label class="form-check-label">I accept the terms & conditions</label><br>
+                    <span class="error-text" th:errors="*{terms}"></span>
+                </div>
 
-			<form action="/register" method="post" th:object="${userdto}">
+                <!-- BUTTON -->
+                <button class="btn btn-primary w-100 py-2">Register</button>
 
-				<!-- NAME -->
-				<div class="mb-3">
-					<label class="form-label">Name</label> <input type="text"
-						class="form-control" th:field="*{name}"> <span
-						class="error-text" th:errors="*{name}"></span>
-				</div>
+                <div class="text-center mt-3">
+                    <small>Already have an account?
+                        <a href="/login" class="text-primary fw-semibold">Login</a>
+                    </small>
+                </div>
 
-				<!-- EMAIL -->
-				<div class="mb-3">
-					<label class="form-label">Email</label> <input type="email"
-						class="form-control" th:field="*{email}"> <span
-						class="error-text" th:errors="*{email}"></span>
-				</div>
+            </form>
 
-				<!-- MOBILE -->
-				<div class="mb-3">
-					<label class="form-label">Mobile</label> <input type="number"
-						class="form-control" th:field="*{mobile}"> <span
-						class="error-text" th:errors="*{mobile}"></span>
-				</div>
+        </div>
+    </div>
 
-				<!-- PASSWORD -->
-				<div class="mb-3">
-					<label class="form-label">Password</label> <input type="password"
-						class="form-control" th:field="*{password}" > <span
-						class="error-text" th:errors="*{password}"></span>
-				</div>
+</div>
 
-				<!-- CONFIRM PASSWORD -->
-				<div class="mb-3">
-					<label class="form-label">Confirm Password</label> <input
-						type="password" class="form-control" th:field="*{confirmpassword}"
-						> <span class="error-text"
-						th:errors="*{confirmpassword}"></span>
-				</div>
-
-				<!-- TERMS -->
-				<div class="form-check mb-3">
-					<input class="form-check-input" type="checkbox" th:field="*{terms}">
-					<label class="form-check-label"> I accept the terms &
-						conditions </label> <br> <span class="error-text"
-						th:errors="*{terms}"></span>
-				</div>
-
-				<button class="btn btn-primary w-100 py-2">Register</button>
-
-				<div class="text-center mt-3">
-					<small> Already have an account? <a href="/login"
-						class="text-primary">Login</a>
-					</small>
-				</div>
-
-			</form>
-
-		</div>
-	</div>
-
-
-	<!-- Bootstrap JS -->
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-	<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll('.toast').forEach(t => new bootstrap.Toast(t).show());
-    });
-</script>
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

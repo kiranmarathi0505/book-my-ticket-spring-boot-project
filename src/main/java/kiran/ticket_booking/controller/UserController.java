@@ -1,8 +1,10 @@
 package kiran.ticket_booking.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -10,6 +12,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import kiran.ticket_booking.dto.LoginDto;
+import kiran.ticket_booking.dto.PasswordDto;
 import kiran.ticket_booking.dto.Userdto;
 import kiran.ticket_booking.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +57,25 @@ public class UserController {
 	@PostMapping("/otp")
 	public String otp(@RequestParam int otp,@RequestParam String email ,RedirectAttributes attributes) {
 		return userService.submitOtp(otp, email, attributes);
+	}
+	@GetMapping("/resend-otp")
+	public String resendOtp(@RequestParam String email, RedirectAttributes attributes) {
+		return userService.resendOtp(email,attributes);
+	}
+	@GetMapping("/forgot-password")
+	public String forgotPassword(PasswordDto passwordDto) {
+		return "emailverify.html";
+	}
+	@PostMapping("/forgot-password")
+	public String forgotPassword(@Valid PasswordDto passwordDto,RedirectAttributes attributes) {
+		return userService.forgotPasswordSendOtp(passwordDto,attributes);
+	}
+	@GetMapping("/reset-password")
+	public String resetPassword(PasswordDto passwordDto) {
+		return "reset-password.html";
+	}
+	@PostMapping("/reset-password")
+	public String resetPassword(@Valid PasswordDto passwordDto,RedirectAttributes attributes,BindingResult result, ModelMap map) {
+		return userService.resetPassword(passwordDto,attributes,result,map);
 	}
 }

@@ -37,7 +37,8 @@ public class EmailHelper {
 			mailSender.send(mimeMessage);
 
 		} catch (Exception e) {
-			System.err.print("Failed to send otp" + otp);
+			e.printStackTrace();;
+			System.err.print("Failed to send otp : " + otp);
 		}
 	}
 

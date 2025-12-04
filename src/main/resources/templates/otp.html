@@ -55,8 +55,16 @@
             </div>
 
             <button type="submit" class="btn btn-primary w-100">Submit</button>
-
         </form>
+
+        <!-- SIMPLE RESEND OTP -->
+        <div class="text-center mt-3">
+    <a th:href="@{'/resend-otp'(email=${email})}" class="btn btn-link">
+        Resend OTP
+    </a>
+</div>
+
+
     </div>
 </div>
 

@@ -4,11 +4,14 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 import org.springframework.stereotype.Service;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import kiran.ticket_booking.dto.LoginDto;
+import kiran.ticket_booking.dto.PasswordDto;
 import kiran.ticket_booking.dto.Userdto;
 import kiran.ticket_booking.entity.User;
 import kiran.ticket_booking.repository.UserRepository;
@@ -52,7 +55,7 @@ public class UserServiceImp implements UserService {
 	}
 
 	@Override
-	public String login(LoginDto loginDto, RedirectAttributes attributes,HttpSession session) {
+	public String login(LoginDto loginDto, RedirectAttributes attributes, HttpSession session) {
 		User user = userRepository.findByEmail(loginDto.getEmail());
 		if (user == null) {
 			attributes.addFlashAttribute("fail", "no email found");
@@ -68,8 +71,6 @@ public class UserServiceImp implements UserService {
 			}
 		}
 	}
-	
-	
 
 	@Override
 	public String submitOtp(int otp, String email, RedirectAttributes attributes) {
@@ -105,4 +106,67 @@ public class UserServiceImp implements UserService {
 		attributes.addFlashAttribute("pass", "Logout Sucessfull");
 		return "redirect:/";
 	}
-}
+
+	@Override
+	public String resendOtp(String email, RedirectAttributes attributes) {
+		Userdto dto = redisService.getDtoByEmail(email);
+		if (dto == null) {
+			attributes.addFlashAttribute("fail", "Time Out , Please Register");
+			return "redirect:/register";
+		} else {
+			int otp = random.nextInt(100000, 999999);
+			emailHelper.mailSend(otp, dto.getName(), dto.getEmail());
+			redisService.saveOtp(dto.getEmail(), otp);
+			attributes.addFlashAttribute("pass", "Otp send Sucessfully");
+			attributes.addFlashAttribute("email", dto.getEmail());
+			return "redirect:/otp";
+		}
+	}
+
+	@Override
+	public String forgotPasswordSendOtp(@Valid PasswordDto passwordDto, RedirectAttributes attributes) {
+		User user = userRepository.findByEmail(passwordDto.getEmail());
+		if (user == null) {
+			attributes.addFlashAttribute("fail", "User Not found");
+			return "redirect:/register";
+		} else {
+			int otp = random.nextInt(100000, 999999);
+			emailHelper.mailSend(otp, user.getName(), user.getEmail());
+			redisService.saveOtp(user.getEmail(), otp);
+			attributes.addFlashAttribute("pass", "OTP send sucessfully");
+			return "reset-password.html";
+		}
+	}
+
+	@Override
+	public String resetPassword(@Valid PasswordDto passwordDto, RedirectAttributes attributes, BindingResult result,
+			ModelMap map) {
+		if (result.hasErrors()) {
+			map.put("email", passwordDto.getEmail());
+			return "reset-password.html";
+		}
+		User user = userRepository.findByEmail(passwordDto.getEmail());
+		if (user == null) {
+			attributes.addFlashAttribute("fail", "Invalid email");
+			return "redirect:/register";
+		} else {
+			int exOtp = redisService.getOtpByEmail(user.getEmail());
+			if (exOtp == 0) {
+				attributes.addFlashAttribute("fail", "OTP expired please resend OTP");
+				attributes.addFlashAttribute("email", user.getEmail());
+				return "redirect:/forgot-password";
+			} else {
+				if (passwordDto.getOtp() == exOtp) {
+					user.setPassword(AES.encrypt(passwordDto.getPassword()));
+					userRepository.save(user);
+					attributes.addFlashAttribute("pass", "Password changed sucessfully");
+					return "redirect:/";
+				}else {
+					attributes.addFlashAttribute("fail", "Invalid OTP");
+					return "redirect:/reset-password";
+				}
+			}
+		}
+	}
+}	
+

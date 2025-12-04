@@ -29,7 +29,7 @@ public class Userdto {
 	@Pattern(regexp = "^.*(?=.{8,})(?=..*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$", message = "* Select a Stronger Password")
 	private String confirmpassword;
 	
-	
+	@NotBlank
 	private String role;
 	
 	@AssertTrue(message = "* Select the Checkbox in order to continue")
