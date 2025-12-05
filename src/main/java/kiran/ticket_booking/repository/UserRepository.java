@@ -1,5 +1,7 @@
 package kiran.ticket_booking.repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import kiran.ticket_booking.entity.User;
@@ -11,6 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	boolean existsByMobile(Long string);
 	
 	User findByEmail(String eamil);
+
+	List<User> findByRole(String string);
 	
 	
 }

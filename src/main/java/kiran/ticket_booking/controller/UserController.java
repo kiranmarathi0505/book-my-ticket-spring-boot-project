@@ -4,6 +4,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -77,5 +78,17 @@ public class UserController {
 	@PostMapping("/reset-password")
 	public String resetPassword(@Valid PasswordDto passwordDto,RedirectAttributes attributes,BindingResult result, ModelMap map) {
 		return userService.resetPassword(passwordDto,attributes,result,map);
+	}
+	@GetMapping("/manage-users")
+	public String manageUsers(HttpSession session, RedirectAttributes attributes, ModelMap map) {
+		return userService.manageUsers(session,attributes,map);
+	}
+	@GetMapping("/block-user/{id}")
+	public String blockUser(@PathVariable Long id, RedirectAttributes attributes, HttpSession session) {
+		return userService.blockUser(id,attributes,session);
+	}
+	@GetMapping("/unblock-user/{id}")
+	public String unblockUser(@PathVariable Long id, RedirectAttributes attributes, HttpSession session) {
+		return userService.unBlockUser(id,attributes,session);
 	}
 }

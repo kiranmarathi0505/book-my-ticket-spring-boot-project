@@ -65,8 +65,13 @@ footer {
 			<div th:if="${session.user != null}"
 				class="d-flex align-items-center">
 				<span class="text-white me-3"
-					th:text="'Hello, ' + ${session.user.name}"></span> <a
-					href="/logout" class="btn btn-danger">Logout</a>
+					th:text="'Hello, ' + ${session.user.name}"></span> 
+					<a href="/logout" class="btn btn-danger">Logout</a>
+					<a th:if="${session.user.role == 'USER'}" class="btn btn-danger">My Booking</a>
+					<a th:if="${session.user.role == 'USER'}" class="btn btn-danger">Movies</a>
+					<a th:if="${session.user.role == 'ADMIN'}" class="btn btn-danger">Manage Movies</a>
+					<a th:if="${session.user.role == 'ADMIN'}" class="btn btn-danger">Manage Theaters</a>
+					<a href="/manage-users" th:if="${session.user.role == 'ADMIN'}" class="btn btn-danger">Manage Users</a>
 			</div>
 
 		</div>

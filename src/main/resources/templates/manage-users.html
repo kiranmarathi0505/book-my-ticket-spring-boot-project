@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Manage Users</title>
+
+<!-- BOOTSTRAP CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+    body {
+        background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        min-height: 100vh;
+        padding-top: 20px;
+    }
+
+    .table-container {
+        margin-top: 40px;
+        padding: 25px;
+        background: #ffffffcc;
+        backdrop-filter: blur(10px);
+        border-radius: 16px;
+        box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .btn-block-custom {
+        background-color: #dc3545;
+        color: white;
+        border-radius: 12px;
+        padding: 8px 16px;
+        transition: 0.2s ease;
+        font-weight: 500;
+    }
+    .btn-block-custom:hover {
+        background-color: #b02a37;
+        transform: scale(1.05);
+    }
+
+    .btn-unblock-custom {
+        background-color: #198754;
+        color: white;
+        border-radius: 12px;
+        padding: 8px 16px;
+        transition: 0.2s ease;
+        font-weight: 500;
+    }
+    .btn-unblock-custom:hover {
+        background-color: #146c43;
+        transform: scale(1.05);
+    }
+
+    table {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #e3f2fd;
+        transition: 0.2s ease-in-out;
+    }
+
+    /* Toast styling */
+    .custom-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 2000;
+        animation: slideIn 0.5s ease;
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(50px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+    <!-- SUCCESS TOAST -->
+    <div th:if="${pass}" 
+         class="toast show custom-toast text-bg-success border-0" 
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" th:text="${pass}"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+
+    <!-- ERROR TOAST -->
+    <div th:if="${fail}" 
+         class="toast show custom-toast text-bg-danger border-0" 
+         role="alert"
+         aria-live="assertive"
+         aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body" th:text="${fail}"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+
+
+    <!-- USERS TABLE -->
+    <div class="table-container" th:if="${users != null && users.size() > 0}">
+        <h3 class="text-center mb-4 fw-bold">Manage Users</h3>
+
+        <table class="table table-hover table-bordered text-center align-middle shadow-sm">
+            <thead class="table-dark">
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Mobile</th>
+                    <th width="160px">Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.mobile}"></td>
+                    <td>
+                        <a th:if="${!user.userBlocked}" 
+                           th:href="@{'/block-user/' + ${user.id}}">
+                            <button class="btn btn-block-custom w-100">Block</button>
+                        </a>
+
+                        <a th:if="${user.userBlocked}" 
+                           th:href="@{'/unblock-user/' + ${user.id}}">
+                            <button class="btn btn-unblock-custom w-100">Unblock</button>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- BOOTSTRAP JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- AUTO HIDE TOASTS IN 3 SECONDS -->
+<script>
+    setTimeout(() => {
+        document.querySelectorAll('.toast').forEach(t => {
+            let toast = bootstrap.Toast.getOrCreateInstance(t);
+            toast.hide();
+        });
+    }, 3000);
+</script>
+
+</body>
+</html>

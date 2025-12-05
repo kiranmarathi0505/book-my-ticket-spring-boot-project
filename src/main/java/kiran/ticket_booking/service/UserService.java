@@ -26,4 +26,11 @@ public interface UserService {
 
 	String resetPassword(@Valid PasswordDto passwordDto, RedirectAttributes attributes, BindingResult result, ModelMap map);
 
+	String manageUsers(HttpSession session, RedirectAttributes attributes, ModelMap map);
+
+	String blockUser(Long id, RedirectAttributes attributes, HttpSession session);
+
+	String unBlockUser(Long id, RedirectAttributes attributes, HttpSession session);
+
+	
 }
